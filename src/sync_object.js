@@ -14,10 +14,19 @@ function mergeObjects(o1, o2){
 
 function SyncObject(properties){
 	this.properties = properties;
+	this.callbacks = [];
+}
+
+SyncObject.prototype.populateChanges = function(){
+	for(var i = 0; i < this.callbacks.length; i++){
+		if(this.callbacks[i] !== undefined)
+			this.callbacks[i]();
+	}
 }
 
 SyncObject.prototype.update = function(properties){
 	this.properties = mergeObjects(properties, this.properties);
+	this.populateChanges();
 }
 
 SyncObject.prototype.get = function(key){
@@ -33,6 +42,17 @@ SyncObject.prototype.get = function(key){
 		}
 	}
 	return currentObj;
+}
+
+SyncObject.prototype.registerOnChange = function(callback){
+	this.callbacks.push(callback);
+	return this.callbacks.length - 1;
+}
+
+SyncObject.prototype.unregisterOnChange = function(id){
+	if(this.callbacks[id] !== undefined){
+		this.callbacks[id] = undefined;
+	}
 }
 
 module.exports = SyncObject;

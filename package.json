@@ -1,19 +1,22 @@
 {
-	"name": "Angular.Node",
-	"version": "0.0.1",
-	"author": "Jonas Schwabe<jonas@jnugh.de>",
-	"description": "Bind JS objects in node to Angular.JS objects",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/gh1234/Angular.Node.git"
-	},
-	"dependencies": {
-		"socket.io": "0.9.x"
-	},
-	"scripts": {
-		"test": "expresso test/*"
-	},
-	"devDependencies": {
-		"expresso": "0.9.x"
-	}
+  "name": "Angular.Node",
+  "version": "0.0.1",
+  "author": "Jonas Schwabe<jonas@jnugh.de>",
+  "description": "Bind JS objects in node to Angular.JS objects",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gh1234/Angular.Node.git"
+  },
+  "dependencies": {
+    "socket.io": "0.9.x",
+    "coveralls": "~2.10.0",
+    "mocha-lcov-reporter": "0.0.1"
+  },
+  "scripts": {
+    "test": "mocha test/*"
+  },
+  "devDependencies": {
+    "mocha": "1.18.x",
+    "socket.io-client": "0.9.x"
+  }
 }

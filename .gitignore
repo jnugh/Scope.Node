@@ -26,3 +26,5 @@ node_modules
 
 
 *~
+src-cov/
+coverage.html

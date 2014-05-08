@@ -1,66 +1,66 @@
-var SyncObject = require('../src/sync_object.js');
+var srcPath = process.env.ANGULAR_NODE_COVERAGE?'../src-cov':'../src';
 
-var data = {
-    	my: 'test',
-    	data: 'contains',
-    	an: {data: 'array'}
-};
-var object = new SyncObject(data);
+var SyncObject = require(srcPath + '/sync_object.js');
+var assert = require("assert");
 
-exports['test SyncObject#create'] = function(beforeExit, assert){
-	assert.eql(object.get('my'), 'test');
-	assert.eql(object.get(), data);
-};
+describe('SyncObject', function(){
+	
+	var data = {
+	    	my: 'test',
+	    	data: 'contains',
+	    	an: {data: 'array'}
+	};
+	var object = new SyncObject(data);
 
-exports['test SyncObject#update'] = function(beforeExit, assert){
-	object.update({
-		newElement: 'new', 
-		an: {newElement: 'data'}
+	describe('#get()', function(){
+		it('should return "test"', function(){
+			assert.equal(object.get('my'), 'test');
+		});
+		it('should return all values', function(){
+			assert.equal(object.get(), data);
+		});
+		it('should return "arrray"', function(){
+			assert.equal(object.get('an.data'), 'array');
+		});
+		it('should get undefined', function(){
+			assert.strictEqual(object.get('undefined', undefined));
+		});
 	});
-	assert.eql(object.get('newElement'), 'new');
-	assert.eql(object.get('an'), {data: 'array', newElement: 'data'});
-};
-
-exports['test SyncObject#get deep'] = function(beforeExit, assert){
-	assert.eql(object.get('newElement'), 'new');
-	assert.eql(object.get('an.newElement'), 'data');
-};
-
-exports['test SyncObject#test onChange'] = function(beforeExit, assert){
-	var callCounter = 0;
-	var onChangeId = object.registerOnChange(function(){
-		callCounter++;
+	
+	describe('#update()', function(){
+		object.update({
+			newElement: 'new', 
+			an: {newElement: 'data'}
+		});
+		it('should return "new"', function(){
+			assert.equal(object.get('newElement'), 'new');
+		});
+		it('should return the merged object', function(){
+			assert.deepEqual(object.get('an'), {data: 'array', newElement: 'data'});
+		});
 	});
-	object.update({
-		newElement: 'new', 
-		an: {newElement: 'data'}
+	
+	describe('#registerOnChange()', function(){
+		var callCounter1 = 0;
+		var callCounter2 = 0;
+		var onChangeId1 = object.registerOnChange(function(){
+			callCounter1++;
+		});
+		var onChangeId2 = object.registerOnChange(function(){
+			callCounter2++;
+		});
+		object.update({
+			newElement: 'new', 
+			an: {newElement: 'data'}
+		});
+		object.unregisterOnChange(onChangeId1);
+		object.update({
+			newElement: 'new', 
+			an: {newElement: 'data'}
+		});
+		it('should have been called one time / two times', function(){
+			assert.equal(callCounter1, 1);
+			assert.equal(callCounter2, 2);
+		});
 	});
-	object.unregisterOnChange(onChangeId);
-	object.update({
-		newElement: 'new', 
-		an: {newElement: 'data'}
-	});
-	assert.eql(callCounter, 1); //First update should have lead to an event, second should have not
-};
-
-exports['test SyncObject#test multiple on change'] = function(beforeExit, assert){
-	var callCounter1 = 0;
-	var callCounter2 = 0;
-	var onChangeId1 = object.registerOnChange(function(){
-		callCounter1++;
-	});
-	var onChangeId2 = object.registerOnChange(function(){
-		callCounter2++;
-	});
-	object.update({
-		newElement: 'new', 
-		an: {newElement: 'data'}
-	});
-	object.unregisterOnChange(onChangeId1);
-	object.update({
-		newElement: 'new', 
-		an: {newElement: 'data'}
-	});
-	assert.eql(callCounter1, 1);
-	assert.eql(callCounter2, 2);
-};
+});

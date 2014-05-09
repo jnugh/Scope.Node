@@ -10,6 +10,7 @@ describe('SyncObject', function(){
 	    	data: 'contains',
 	    	an: {data: 'array'}
 	};
+	
 	var object = new SyncObject(data);
 
 	describe('#get()', function(){
@@ -61,6 +62,46 @@ describe('SyncObject', function(){
 		it('should have been called one time / two times', function(){
 			assert.equal(callCounter1, 1);
 			assert.equal(callCounter2, 2);
+		});
+	});
+	
+	describe('#unset()', function(){
+		it('should not have a property "notThere"', function(){
+			assert.equal(object.get().hasOwnProperty('notThere'), false);
+		});
+		it('should have a property "notThere" which will then be deleted', function(){
+			object.update({notThere: true});
+			assert.equal(object.get().hasOwnProperty('notThere'), true);
+			object.unset('notThere');
+			assert.equal(object.get().hasOwnProperty('notThere'), false);
+		});
+	});
+	
+	describe('#isEmpty()', function(){
+		var emptyStore;
+		beforeEach(function(done){
+			emptyStore = new SyncObject();
+			done();
+		});
+		it('should be empty', function(){
+			assert.equal(emptyStore.isEmpty(), true);
+		});
+		it('should be empty', function(){
+			assert.equal(emptyStore.isEmpty(), true);
+		});
+		it('should not be empty', function(){
+			emptyStore.update({'notEmpty': true});
+			assert.equal(emptyStore.isEmpty(), false);
+		});
+		it('should be empty', function(){
+			emptyStore.update({'notEmpty': true});
+			emptyStore.unset('notEmpty');
+			assert.equal(emptyStore.isEmpty(), true);
+		});
+		it('should be empty', function(){
+			emptyStore.update({'notEmpty': true});
+			emptyStore.update({'notEmpty': undefined});
+			assert.equal(emptyStore.isEmpty(), true);
 		});
 	});
 });

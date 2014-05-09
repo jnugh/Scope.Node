@@ -13,7 +13,11 @@ function mergeObjects(o1, o2){
 }
 
 function SyncObject(properties){
-	this.properties = properties;
+	if(!properties){
+		this.properties = {};
+	} else {
+		this.properties = properties;
+	}
 	this.callbacks = [];
 }
 
@@ -53,6 +57,22 @@ SyncObject.prototype.unregisterOnChange = function(id){
 	if(this.callbacks[id] !== undefined){
 		this.callbacks[id] = undefined;
 	}
+}
+
+SyncObject.prototype.unset = function(id){
+	delete this.properties[id];
+}
+
+SyncObject.prototype.isEmpty = function(){
+	for(var prop in this.properties) {
+		if(typeof(this.properties[prop]) === 'undefined'){
+			continue;
+		}
+		if(this.properties.hasOwnProperty(prop)){
+			return false;
+		}
+	}
+	return true;
 }
 
 module.exports = SyncObject;

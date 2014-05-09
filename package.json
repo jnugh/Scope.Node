@@ -13,7 +13,7 @@
     "mocha-lcov-reporter": "0.0.1"
   },
   "scripts": {
-    "test": "export ANGULAR_NODE_COVERAGE=1; jscoverage --no-highlight src src-cov; mocha test/* -R html-cov > coverage.html; unset ANGULAR_NODE_COVERAGE; mocha test/*"
+    "test": "mocha test/*"
   },
   "devDependencies": {
     "mocha": "1.18.x",

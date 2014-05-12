@@ -54,4 +54,37 @@ describe('Store', function(){
 		});
 		
 	});
+	
+	describe('#connect()', function(){
+		var result = store.serialize('test');
+		var resultObj = JSON.parse(result);
+		it('should throw an exception if the listener does not exist', function(){
+			assert.throws(function(){
+				store.connect('not existing', function(){})
+			}, Error);
+		});
+		it('should connect to the change listener', function(done){
+			store.connect(resultObj.handlerKey, function(data){
+				assert.equal(data.should, 'call');
+				done();
+			});
+			object.update({should: 'call'});
+		});
+	});
+	
+	describe('#disconnect()', function(){
+		var result = store.serialize('test2');
+		var resultObj = JSON.parse(result);
+		var object = store.get('test2');
+		
+		it('should disconnect the listener', function(done){
+			store.connect(resultObj.handlerKey, function(data){
+				assert.fail('The listener has been called!');
+				done();
+			});
+			store.disconnect(resultObj.handlerKey);
+			object.update({should: 'call'});
+			done();
+		});
+	});
 });

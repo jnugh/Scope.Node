@@ -22,9 +22,10 @@ function SyncObject(properties){
 }
 
 SyncObject.prototype.populateChanges = function(){
+	var newData = this.get();
 	for(var i = 0; i < this.callbacks.length; i++){
 		if(this.callbacks[i] !== undefined)
-			this.callbacks[i]();
+			this.callbacks[i](newData);
 	}
 }
 

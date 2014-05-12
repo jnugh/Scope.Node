@@ -70,6 +70,14 @@ describe('Store', function(){
 			});
 			object.update({should: 'call'});
 		});
+		it('should not connect to the change listener a second time', function(){
+			assert.throws(function(){
+				store.connect(resultObj.handlerKey, function(data){
+					assert.fail('has been registered!');
+					done();
+				});
+			}, Error);
+		});
 	});
 	
 	describe('#disconnect()', function(){
@@ -85,6 +93,15 @@ describe('Store', function(){
 			store.disconnect(resultObj.handlerKey);
 			object.update({should: 'call'});
 			done();
+		});
+		
+		it('should throw an exception', function(){
+			assert.throws(function(){
+				store.disconnect(resultObj.handlerKey);
+			}, Error);
+			assert.throws(function(){
+				store.disconnect('does not exist!');
+			}, Error);
 		});
 	});
 });
